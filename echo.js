@@ -91,6 +91,12 @@ class OracoEcho {
                 return;
             }
 
+            target.innerHTML = wrapper
+                ? wrapper.replace('{{value}}', `${value}`)
+                : `${value}`;
+        } else {
+            target.innerHTML = `${value}`;
+        }
     }
 
     /** @param {Event} event  */

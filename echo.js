@@ -89,9 +89,9 @@ class OracoEcho {
             template = template.firstElementChild.outerHTML;
             template = template.replace(/{{value}}/g, `${value}`);
             target.innerHTML = template;
+            const wrapper = source.getAttribute('data-echo-wrapper');
 
         }else if(source.hasAttribute('data-echo-wrapper')){
-            wrapper = source.getAttribute('data-echo-wrapper');
             
             target.innerHTML = wrapper ? wrapper.replace('{{value}}', value) : value;
         }else{

@@ -2,7 +2,7 @@ class OracoEcho {
     /** @param {string} formId ID of the target form */
     constructor(formId) {
         this.form = document.getElementById(formId);
-        
+
         this.initialize();
         this.echoAll();
     }
@@ -41,6 +41,7 @@ class OracoEcho {
                 return source.checked;
             case 'select-multiple':
                 const selectedValues = [];
+                // @ts-ignore - options is available
                 for (const option of source.options) {
                     if (option.selected) {
                         selectedValues.push(option.value);
@@ -89,14 +90,9 @@ class OracoEcho {
             template = template.firstElementChild.outerHTML;
             template = template.replace(/{{value}}/g, `${value}`);
             target.innerHTML = template;
+        } else if (source.hasAttribute('data-echo-wrapper')) {
             const wrapper = source.getAttribute('data-echo-wrapper');
 
-        }else if(source.hasAttribute('data-echo-wrapper')){
-            
-            target.innerHTML = wrapper ? wrapper.replace('{{value}}', value) : value;
-        }else{
-            target.innerHTML = value;
-        }
             if (wrapper == null) {
                 console.error('data-echo-wrapper is missing');
                 return;
@@ -147,8 +143,8 @@ class OracoEcho {
         );
 
         // filter inputs by it's value and disable attributes
-        inputs.forEach(source => {
-            if(this.validate(source, true)){
+        inputs.forEach((source) => {
+            if (this.validate(source, true)) {
                 this.echoElement(source);
             }
         });
@@ -161,25 +157,28 @@ class OracoEcho {
      */
     validate(source, echoAll = false) {
         // extra rules if echoAll is triggered
-        if(echoAll){
+        if (echoAll) {
             // input must NOT have data-echo-disable-autofill
-            if(source.hasAttribute('data-echo-disable-autofill')){
+            if (source.hasAttribute('data-echo-disable-autofill')) {
                 return false;
             }
 
             // the value must NOT be empty
-            if(!this.getValue(source)){
+            if (!this.getValue(source)) {
                 return false;
             }
         }
 
         // input must NOT have data-echo-disable
-        if(source.hasAttribute('data-echo-disable')){
+        if (source.hasAttribute('data-echo-disable')) {
             return false;
         }
 
         // input must have a target
-        if(!source.hasAttribute('data-echo-target')){
+        if (!source.hasAttribute('data-echo-target')) {
+            return false;
+        }
+
         const targetId = source.getAttribute('data-echo-target');
 
         if (targetId == null) {
@@ -200,7 +199,10 @@ class OracoEcho {
         }
 
         // template ID must exist
-        if(source.hasAttribute('data-echo-wrapper-template') && document.getElementById(source.getAttribute('data-echo-wrapper-template')) === null){
+        if (
+            source.hasAttribute('data-echo-wrapper-template') &&
+            document.getElementById(templateId) == null
+        ) {
             return false;
         }
 

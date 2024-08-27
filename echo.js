@@ -8,6 +8,10 @@ class OracoEcho {
     }
 
     initialize() {
+        if (this.form == null) {
+            console.error('Form not found');
+            return;
+        }
         // Attach the event listener to the form
         this.form.addEventListener('input', this.echo.bind(this));
     }
@@ -51,12 +55,26 @@ class OracoEcho {
     /** @param {HTMLInputElement} source */
     echoElement(source) {
         const value = this.getValue(source);
-        const target = document.getElementById(source.getAttribute('data-echo-target'));
 
-        if(source.hasAttribute('data-echo-wrapper-template')){
+        if (value === '' || value == null) {
+            console.error(`Value is empty for ${source.id}`);
+            return;
+        }
 
-            let template = document.getElementById(source.getAttribute('data-echo-wrapper-template')).content.cloneNode(true);
-            
+        const echoAttribute = source.getAttribute('data-echo-attribute');
+
+        if (echoAttribute == null) {
+            console.error('data-echo-attribute is missing');
+            return;
+        }
+
+        const target = document.getElementById(echoAttribute);
+
+        if (target == null) {
+            console.error('Target not found');
+            return;
+        }
+
             template = template.firstElementChild.outerHTML;
             template = template.replace(/{{value}}/g, value);
             target.innerHTML = template;
@@ -68,6 +86,10 @@ class OracoEcho {
         }else{
             target.innerHTML = value;
         }
+            if (wrapper == null) {
+                console.error('data-echo-wrapper is missing');
+                return;
+            }
 
     }
 
@@ -76,12 +98,29 @@ class OracoEcho {
         // get the event target
         const source = event.target;
 
-        if(this.validate(source)){
+        if (source == null) {
+            console.error('Event target not found');
+            return;
+        }
+
+        if (source instanceof HTMLInputElement == false) {
+            console.error('Event target is not an input element');
+            return;
+        }
+
+        if (this.validate(source)) {
             // echo the target element
             this.echoElement(source);
         }
     }
 
+    echoAll() {
+        const form = this.form;
+
+        if (form == null) {
+            console.error('Form not found');
+            return;
+        }
 
         // get all the inputs from the parent container
         const inputs = /** @type {NodeListOf<HTMLInputElement>} */ (
@@ -124,11 +163,22 @@ class OracoEcho {
 
         // input must have a target
         if(!source.hasAttribute('data-echo-target')){
+        const targetId = source.getAttribute('data-echo-target');
+
+        if (targetId == null) {
+            console.error('data-echo-target is missing');
             return false;
         }
 
         // target ID must exist
-        if(document.getElementById(source.getAttribute('data-echo-target')) === null){
+        if (document.getElementById(targetId) == null) {
+            return false;
+        }
+
+        const templateId = source.getAttribute('data-echo-wrapper-template');
+
+        if (templateId == null) {
+            console.error('data-echo-wrapper-template is missing');
             return false;
         }
 

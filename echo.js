@@ -38,7 +38,7 @@ class OracoEcho {
             case 'textarea':
                 return source.value;
             case 'checkbox':
-                return source.checked ? true : false;
+                return source.checked;
             case 'select-multiple':
                 const selectedValues = [];
                 for (const option of source.options) {
@@ -76,7 +76,7 @@ class OracoEcho {
         }
 
             template = template.firstElementChild.outerHTML;
-            template = template.replace(/{{value}}/g, value);
+            template = template.replace(/{{value}}/g, `${value}`);
             target.innerHTML = template;
 
         }else if(source.hasAttribute('data-echo-wrapper')){

@@ -1,4 +1,5 @@
 class OracoEcho {
+    /** @param {string} formId ID of the target form */
     constructor(formId) {
         this.form = document.getElementById(formId);
         
@@ -11,6 +12,7 @@ class OracoEcho {
         this.form.addEventListener('input', this.echo.bind(this));
     }
 
+    /** @param {HTMLInputElement} source */
     getValue(source) {
         switch (source.type) {
             case 'text':
@@ -46,7 +48,8 @@ class OracoEcho {
         }
     }
 
-    echoElement(source){
+    /** @param {HTMLInputElement} source */
+    echoElement(source) {
         const value = this.getValue(source);
         const target = document.getElementById(source.getAttribute('data-echo-target'));
 
@@ -68,6 +71,7 @@ class OracoEcho {
 
     }
 
+    /** @param {Event} event  */
     echo(event) {
         // get the event target
         const source = event.target;
@@ -79,9 +83,12 @@ class OracoEcho {
     }
 
 
-    echoAll(){
         // get all the inputs from the parent container
-        const inputs = this.form.querySelectorAll('input[data-echo-target], select[data-echo-target], textarea[data-echo-target]');
+        const inputs = /** @type {NodeListOf<HTMLInputElement>} */ (
+            form.querySelectorAll(
+                'input[data-echo-target], select[data-echo-target], textarea[data-echo-target]',
+            )
+        );
 
         // filter inputs by it's value and disable attributes
         inputs.forEach(source => {
@@ -91,7 +98,12 @@ class OracoEcho {
         });
     }
 
-    validate(source, echoAll = false){
+    /**
+     * @param {HTMLInputElement} source
+     * @param {boolean} [echoAll=false] [TODO:description]
+     * @returns {boolean}
+     */
+    validate(source, echoAll = false) {
         // extra rules if echoAll is triggered
         if(echoAll){
             // input must NOT have data-echo-disable-autofill

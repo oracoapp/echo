@@ -75,6 +75,17 @@ class OracoEcho {
             return;
         }
 
+        if (source.hasAttribute('data-echo-wrapper-template')) {
+            const echoWrapperTemplate = /** @type {string} */ (
+                source.getAttribute('data-echo-attribute')
+            );
+
+            // @ts-ignore - content is available
+            let template = document
+                .getElementById(echoWrapperTemplate)
+                // @ts-ignore - content exists
+                .content.cloneNode(true);
+
             template = template.firstElementChild.outerHTML;
             template = template.replace(/{{value}}/g, `${value}`);
             target.innerHTML = template;
